@@ -4,13 +4,17 @@ import { FaCalendarAlt, FaFileAlt, FaBook, FaTimes } from "react-icons/fa";
 import AddMaterialDialog from "../AddMaterialDialog/AddMaterialDialog";
 import { useGetAllMaterialsQuery } from "@/shared/redux/rtk-apis/materials/materials.api";
 import MaterialCard from "../MaterialCard/MaterialCard";
+import AddExamDialog from "../AddExamDialog/AddExamDialog";
+import { useGetAllExamsQuery } from "@/shared/redux/rtk-apis/exams/exams.api";
+import ExamCard from "../ExamCard/ExamCard";
 
 const ClassworkSection= ({classroomId}:{classroomId:string})=> {
   const [expanded, setExpanded] = useState(false);
   const [isMaterialDialogOpen, setIsMaterialDialogOpen] = useState(false)
+  const [isExamDialogOpen, setIsExamDialogOpen] = useState(false)
 
   const {data: materials }= useGetAllMaterialsQuery(classroomId)
-
+  const {data: exams }= useGetAllExamsQuery(classroomId)
   return (
     <>
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 p-4 pl-0 rounded-lg w-[250px] ">
@@ -23,7 +27,7 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
           >
             <FaTimes size={18} /> Collapse
           </Button>
-          <Button className="bg-custom-green text-white flex items-center gap-2 hover:bg-custom-green-hover">
+          <Button className="bg-custom-green text-white flex items-center gap-2 hover:bg-custom-green-hover" onClick={()=>setIsExamDialogOpen(true)}>
             <FaCalendarAlt size={18} /> Schedule Exam
           </Button>
           <Button className="bg-custom-green text-white flex items-center gap-2 hover:bg-custom-green-hover">
@@ -51,8 +55,12 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
                 <div className="w-[100%] h-[2px] bg-white my-2"></div>
             </div>
             </AccordionTrigger>
-          <AccordionContent>
-          N/A
+            <AccordionContent>
+            {
+              exams?.map((exam)=>
+                <ExamCard exam={exam} />
+              )
+            }
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -83,6 +91,7 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
         </Accordion>
       </div>
      <AddMaterialDialog isDialogOpen={isMaterialDialogOpen} onClose={() => setIsMaterialDialogOpen(false)} classroomId={classroomId} />
+     <AddExamDialog isDialogOpen={isExamDialogOpen} onClose={() => setIsExamDialogOpen(false)} classroomId={classroomId} />
     </>
   );
 }
