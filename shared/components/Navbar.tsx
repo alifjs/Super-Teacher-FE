@@ -24,7 +24,7 @@ const Navbar = ({
 
   return (
     <nav className="bg-gray-900 text-white p-4 flex justify-between items-center">
-      <div className="text-lg font-semibold">Dashboard</div>
+      <div className="text-lg font-semibold cursor-pointer sm:ml-8" onClick={() => router.push("/dashboard")}>Dashboard</div>
       <div className="flex items-center space-x-6">
       <FaPlus className="text-xl cursor-pointer" title="Add" onClick={() => setIsDialogOpen(true)}/>
         <FaClock className="text-xl" />

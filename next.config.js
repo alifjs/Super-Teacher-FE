@@ -5,7 +5,7 @@ const getConnectSrcCSPConfig = () => {
   const defaultConnectSrc = "";
 
   if (["development", "local"].includes(env)) {
-    return `${defaultConnectSrc} http://localhost:*`;
+    return `${defaultConnectSrc} http://localhost:* ws://localhost:3001`;
   }
 
   return defaultConnectSrc;
