@@ -7,14 +7,19 @@ import MaterialCard from "../MaterialCard/MaterialCard";
 import AddExamDialog from "../AddExamDialog/AddExamDialog";
 import { useGetAllExamsQuery } from "@/shared/redux/rtk-apis/exams/exams.api";
 import ExamCard from "../ExamCard/ExamCard";
+import AddAssignmentDialog from "../AddAssignmentDialog/AddAssignmentDialog";
+import { useGetAllAssignmentsQuery } from "@/shared/redux/rtk-apis/assignments/assignments.api";
+import AssignmentCard from "../AssignmentCard/AssignmentCard";
 
 const ClassworkSection= ({classroomId}:{classroomId:string})=> {
   const [expanded, setExpanded] = useState(false);
   const [isMaterialDialogOpen, setIsMaterialDialogOpen] = useState(false)
   const [isExamDialogOpen, setIsExamDialogOpen] = useState(false)
+  const [isAssignmentDialogOpen, setIsAssignmentDialogOpen] = useState(false)
 
   const {data: materials }= useGetAllMaterialsQuery(classroomId)
   const {data: exams }= useGetAllExamsQuery(classroomId)
+  const {data: assignments }= useGetAllAssignmentsQuery(classroomId)
   return (
     <>
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 p-4 pl-0 rounded-lg w-[250px] ">
@@ -30,7 +35,7 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
           <Button className="bg-custom-green text-white flex items-center gap-2 hover:bg-custom-green-hover" onClick={()=>setIsExamDialogOpen(true)}>
             <FaCalendarAlt size={18} /> Schedule Exam
           </Button>
-          <Button className="bg-custom-green text-white flex items-center gap-2 hover:bg-custom-green-hover">
+          <Button className="bg-custom-green text-white flex items-center gap-2 hover:bg-custom-green-hover"  onClick={()=>setIsAssignmentDialogOpen(true)}>
             <FaFileAlt size={18} /> Add Assignment
           </Button>
           <Button className="bg-custom-green text-white flex items-center gap-2 hover:bg-custom-green-hover" onClick={()=>setIsMaterialDialogOpen(true)}>
@@ -85,13 +90,19 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
         <AccordionItem value="item-1">
             <AccordionTrigger className='text-2xl hover:no-underline'>Assignments</AccordionTrigger>
             <AccordionContent>
-            N/A
+            {
+              assignments?.map((assignment)=>
+                <AssignmentCard assignment={assignment} />
+              )
+            }
             </AccordionContent>
         </AccordionItem>
         </Accordion>
       </div>
      <AddMaterialDialog isDialogOpen={isMaterialDialogOpen} onClose={() => setIsMaterialDialogOpen(false)} classroomId={classroomId} />
      <AddExamDialog isDialogOpen={isExamDialogOpen} onClose={() => setIsExamDialogOpen(false)} classroomId={classroomId} />
+     <AddAssignmentDialog isDialogOpen={isAssignmentDialogOpen} onClose={() => setIsAssignmentDialogOpen(false)} classroomId={classroomId} />
+
     </>
   );
 }

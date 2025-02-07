@@ -27,8 +27,8 @@ const ExamCard = ({ exam }: { exam: TExam }) => {
             {menuOpen && (
             <div className="absolute top-8 right-0 bg-white shadow-md rounded-md border">
                 <ul className="py-1">
-                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => console.log('Edit', exam.id)}>Edit</li>
-                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => console.log('Delete', exam.id)}>Delete</li>
+                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">Edit</li>
+                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">Delete</li>
                 </ul>
             </div>
             )}
