@@ -1,0 +1,1 @@
+export const SIX_HOURS_IN_MS=6 * 60 * 60 * 1000;
