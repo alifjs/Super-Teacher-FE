@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm} from "react-hook-form"
 import {
   Form,
@@ -19,12 +19,19 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { useDropzone } from "react-dropzone";
 import { useCallback } from "react";
 import useSubmitAddMaterialForm from '../../hooks/useSubmitAddMaterialForm';
+import { TMaterial } from '@/shared/redux/rtk-apis/materials/materials.types';
+import useSubmitEditMaterialForm from '../../hooks/useSubmitEditMaterialForm';
 
 
-const AddMaterialForm = ({ onClose, classroomId }: { onClose: () => void; classroomId : string }) => {
+const AddMaterialForm = ({ onClose, classroomId, editData }: { onClose: () => void; classroomId : string; editData?: TMaterial | null; }) => {
+  confirm
     const form = useForm<TAddMaterialForm>({
       resolver: zodResolver(addMaterialFormSchema),
       mode: "onChange",
+      defaultValues: {
+        title: editData?.title || '',
+        instruction: editData?.instruction || '',
+      }
     });
 
     const {formState: { errors }, handleSubmit  } = form
@@ -35,13 +42,17 @@ const AddMaterialForm = ({ onClose, classroomId }: { onClose: () => void; classr
     };
 
     const { submitAddMaterialForm} = useSubmitAddMaterialForm()
+    const { submitEditMaterialForm} = useSubmitEditMaterialForm()
 
-    const handleFormSubmit =async (data: TAddMaterialForm) => { 
-      const success = await submitAddMaterialForm(data, classroomId);
+    const handleFormSubmit = async (data: TAddMaterialForm) => {
+      const success = editData
+        ? await submitEditMaterialForm(data, classroomId, editData.id)
+        : await submitAddMaterialForm(data, classroomId);
       if (success) {
         onClose();
       }
     };
+    
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles[0]) {
           form.setValue("file", acceptedFiles[0]);

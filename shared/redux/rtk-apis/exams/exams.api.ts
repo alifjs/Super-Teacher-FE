@@ -12,6 +12,21 @@ const examsApi = projectApi.injectEndpoints({
       }),
       invalidatesTags:["Exams"]
     }),
+    editExam: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `classrooms/exams/${id}`,
+        method: "PATCH",
+        body: formData,
+      }),
+      invalidatesTags: ["Exams"]
+    }),
+    deleteExam: builder.mutation({
+      query: ({ id }) => ({
+        url: `classrooms/exams/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Exams"]
+    }),        
     getAllExams: builder.query({
       query: (id) => `classrooms/${id}/exams`,
       providesTags: ["Exams"],
@@ -20,4 +35,4 @@ const examsApi = projectApi.injectEndpoints({
   })
 });
 
-export const { useAddExamMutation, useGetAllExamsQuery } = examsApi;
+export const { useAddExamMutation, useGetAllExamsQuery, useEditExamMutation, useDeleteExamMutation} = examsApi;

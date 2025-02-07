@@ -19,12 +19,22 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { useDropzone } from "react-dropzone";
 import { useCallback } from "react";
 import useSubmitAddAssignmentForm from '../../hooks/useSubmitAddAssignmentForm';
+import { TAssignment } from '@/shared/redux/rtk-apis/assignments/assignments.types';
+import { formatForDateTimeLocal } from './AddAssignmentForm.utils';
+import useSubmitEditAssignmentForm from '../../hooks/useSubmitEditAssignmentForm';
 
 
-const AddAssignmentForm = ({ onClose, classroomId }: { onClose: () => void; classroomId : string }) => {
+const AddAssignmentForm = ({ onClose, classroomId, editData }: { onClose: () => void; classroomId : string;  editData?: TAssignment | null; }) => {
     const form = useForm<TAddAssignmentForm>({
       resolver: zodResolver(addAssignmentFormSchema),
       mode: "onChange",
+      defaultValues: {
+        title: editData?.title || '',
+        instruction: editData?.instruction || '',
+        deadline: editData?.deadline 
+        ? formatForDateTimeLocal(editData.deadline)
+        : ''
+      }
     });
 
     const {formState: { errors }, handleSubmit  } = form
@@ -35,13 +45,18 @@ const AddAssignmentForm = ({ onClose, classroomId }: { onClose: () => void; clas
     };
 
     const { submitAddAssignmentForm} = useSubmitAddAssignmentForm()
+    const { submitEditAssignmentForm} = useSubmitEditAssignmentForm()
 
-    const handleFormSubmit =async (data: TAddAssignmentForm) => { 
-      const success = await submitAddAssignmentForm(data, classroomId);
+    const handleFormSubmit = async (data: TAddAssignmentForm) => {
+      const success = editData
+        ? await submitEditAssignmentForm(data, editData.id)
+        : await submitAddAssignmentForm(data, classroomId);
       if (success) {
         onClose();
       }
     };
+
+
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles[0]) {
           form.setValue("file", acceptedFiles[0]);

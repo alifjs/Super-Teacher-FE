@@ -15,20 +15,28 @@ const SubmissionsDialog = ({ isDialogOpen, onClose, assignmentId }: { isDialogOp
                 </DialogHeader>
                 <div className="space-y-3">
                     {assignmentSubmissions?.length > 0 ? (
-                        assignmentSubmissions.map((submission, index) => (
-                            <div key={index} className="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow-sm">
-                                <div>
-                                    <p className="text-lg font-semibold text-black">{submission.firstName} {submission.lastName}</p>
-                                    <p className="text-sm text-gray-600">{submission.email}</p>
-                                </div>
-                                <a href={submission.downloadUrl} download className="text-custom-green hover:text-green-700">
-                                    <FiDownload size={20} />
-                                </a>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-center text-gray-500 text-lg py-4">No submissions</p>
-                    )}
+                            assignmentSubmissions.map((submission, index) => {
+                                const isLate = new Date(submission.createdAt) >= new Date(submission.deadline);
+                                return (
+                                    <div key={index} className="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow-sm">
+                                        <div>
+                                            <p className="text-lg font-semibold text-black">
+                                                {submission.firstName} {submission.lastName}
+                                                {isLate && (
+                                                    <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">Late</span>
+                                                )}
+                                            </p>
+                                            <p className="text-sm text-gray-600">{submission.email}</p>
+                                        </div>
+                                        <a href={submission.downloadUrl} download className="text-custom-green hover:text-green-700">
+                                            <FiDownload size={20} />
+                                        </a>
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <p className="text-center text-gray-500 text-lg py-4">No submissions</p>
+                        )}
                 </div>
             </DialogContent>
         </Dialog>

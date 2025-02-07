@@ -9,8 +9,10 @@ import { useSelector } from 'react-redux';
 import { TRootState } from '@/shared/redux/store';
 import SubmissionsDialog from '../SubmissionsDialog/SubmissionsDialog';
 import { formatDeadline } from './AssignmentCard.utils';
+import { useDeleteAssignmentMutation } from '@/shared/redux/rtk-apis/assignments/assignments.api';
+import { toast } from 'sonner';
 
-const AssignmentCard = ({ assignment }: { assignment: TAssignment }) => {
+const AssignmentCard = ({ assignment, onEdit  }: { assignment: TAssignment; onEdit: (assignment: TAssignment) => void  }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false)
   const [isSubmissionDialogOpen, setIsSubmissionDialogOpen] = useState(false)
@@ -20,6 +22,29 @@ const AssignmentCard = ({ assignment }: { assignment: TAssignment }) => {
   const handleDownload = () => {
     window.open(assignment.downloadUrl, '_blank');
   };
+
+  const handleEdit = () => {
+    onEdit(assignment);
+    setMenuOpen(false);
+  };
+
+  const [deleteAssignment] = useDeleteAssignmentMutation();
+
+  const handleDelete = async () => {
+    try {
+      await deleteAssignment({
+        id: assignment.id 
+      }).unwrap();
+      toast.success("Success", {
+        description: 'The assignment has been deleted successfully.',
+      });
+    } catch (error) {
+      toast.error("Failed to delete assignment", {
+        description: "Something went wrong",
+      });
+    }
+  };
+
 
   return (
     <Card className="bg-white w-full rounded-xl shadow sm:px-4 sm:py-2 text-black mt-4">
@@ -36,8 +61,8 @@ const AssignmentCard = ({ assignment }: { assignment: TAssignment }) => {
             {menuOpen && (
             <div className="absolute top-8 right-0 bg-white shadow-md rounded-md border">
                 <ul className="py-1">
-                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100" >Edit</li>
-                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100" >Delete</li>
+                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={handleEdit}>Edit</li>
+                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={handleDelete}>Delete</li>
                 </ul>
             </div>
             )}
@@ -52,7 +77,9 @@ const AssignmentCard = ({ assignment }: { assignment: TAssignment }) => {
         </Button>
         <div className='flex'>
           <p className='mt-auto'><span className='font-bold'>Deadline : &nbsp;</span>
+          <span className={new Date(assignment.deadline) < new Date() ? 'text-red-600' : ''}>
             {formatDeadline(assignment.deadline)}
+          </span>
           </p>
           {user.role === 'student' ? (
             assignment.submittedOrNot === false ? (

@@ -6,10 +6,14 @@ import ClassworkSection from '../../components/ClassworkSection/ClassworkSection
 import ClassroomChat from '../../components/ClassroomChat/ClassroomChat';
 import StreamSection from '../../components/StreamSection/StreamSection';
 import ClassSection from '../../components/ClassSection/ClassSection';
+import socket from "@/lib/socket";
+import { messagesApi } from '@/shared/redux/rtk-apis/messages/messages.api';
+import { useDispatch } from 'react-redux';
 
 const ClassroomContainer = ({ classroomId }: { classroomId: string }) => {
   const [activeTab, setActiveTab] = useState("Stream");
   const [isMobile, setIsMobile] = useState(false);
+  
 
   useEffect(() => {
     const handleResize = () => {
@@ -24,6 +28,25 @@ const ClassroomContainer = ({ classroomId }: { classroomId: string }) => {
   const tabs = isMobile
     ? ["Stream", "Class", "Classwork", "People"]
     : ["Stream", "Classwork", "People"];
+
+    const dispatch = useDispatch();
+  
+  useEffect(() => {
+    socket.connect();
+    socket.emit("joinClassroom", Number(classroomId));
+
+    const handleNewMessage = () => {
+      dispatch(messagesApi.util.invalidateTags(['Messages']));
+    };
+
+    socket.on("newMessage", handleNewMessage);
+
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+      socket.emit("leaveClassroom", Number(classroomId));
+      socket.disconnect();
+    };
+  }, [classroomId, dispatch]);
 
   return (
     <div>

@@ -12,6 +12,21 @@ const assignmentsApi = projectApi.injectEndpoints({
       }),
       invalidatesTags:["Assignments"]
     }),
+    editAssignment: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `classrooms/assignments/${id}`,
+        method: "PATCH",
+        body: formData,
+      }),
+      invalidatesTags: ["Assignments"]
+    }),
+    deleteAssignment: builder.mutation({
+      query: ({id }) => ({
+        url: `classrooms/assignments/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Assignments"]
+    }),
     addAssignmentSubmission: builder.mutation({
       query: ({ id, formData }) => ({
         url: `classrooms/assignments/${id}`,
@@ -32,4 +47,5 @@ const assignmentsApi = projectApi.injectEndpoints({
   })
 });
 
-export const { useAddAssignmentMutation, useGetAllAssignmentsQuery, useAddAssignmentSubmissionMutation, useGetAllAssignmentSubmissionsQuery } = assignmentsApi;
+export const { useAddAssignmentMutation, useGetAllAssignmentsQuery, 
+  useAddAssignmentSubmissionMutation, useGetAllAssignmentSubmissionsQuery, useEditAssignmentMutation, useDeleteAssignmentMutation } = assignmentsApi;

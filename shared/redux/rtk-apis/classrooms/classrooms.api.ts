@@ -62,10 +62,15 @@ const classroomsApi = projectApi.injectEndpoints({
       invalidatesTags: ["Classroom"],
       transformResponse: (response: TApiResponse<TClassroom>) => response.data,
     }),
+    getStudentCount: builder.query({
+      query: (id) => `classrooms/${id}/student-count`,
+      providesTags: ['EnrolledStudents'],
+      transformResponse: (response: TApiResponse<number>) => response.data,
+    }),
   }),
   overrideExisting: false,
 });
 
 export const { useCreateClassroomMutation, useGetClassroomsQuery, useAddStudentsMutation,
    useGetUnenrolledStudentsQuery, useGetEnrolledStudentsQuery, useGetClassroomTeacherQuery 
-  ,useRemoveStudentMutation, useGetClassroomQuery, useUpdateMeetLinkMutation} = classroomsApi;
+  ,useRemoveStudentMutation, useGetClassroomQuery, useUpdateMeetLinkMutation, useGetStudentCountQuery} = classroomsApi;

@@ -10,7 +10,7 @@ export default function ClassroomChat({ classroomId }: { classroomId: string }) 
   const [messageInput, setMessageInput] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const messagesEndRef = useRef(null);
-  const { data: fetchedMessages, refetch } = useGetMessagesQuery(classroomId);
+  const { data: fetchedMessages } = useGetMessagesQuery(classroomId);
   const [messages, setMessages] = useState<any[]>([]);
   const [sendMessage] = useSendMessageMutation();
   const user = useSelector((state: TRootState) => state.authenticatedUser);
@@ -21,19 +21,6 @@ export default function ClassroomChat({ classroomId }: { classroomId: string }) 
       setMessages(fetchedMessages);
     }
   }, [fetchedMessages]);
-
-  useEffect(() => {
-    socket.connect();
-    socket.emit("joinClassroom", Number(classroomId));
-    const handleNewMessage = () => {
-      refetch();
-    };
-    socket.on("newMessage", handleNewMessage);
-    return () => {
-      socket.off("newMessage", handleNewMessage);
-      socket.disconnect();
-    };
-  }, [classroomId]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

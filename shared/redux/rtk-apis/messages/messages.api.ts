@@ -1,7 +1,7 @@
 import { TApiResponse } from "@/shared/typedefs";
 import projectApi from "../api.config";
 
-const messagesApi = projectApi.injectEndpoints({
+export const messagesApi = projectApi.injectEndpoints({
   endpoints: (builder) => ({
     getMessages: builder.query({
         query: (classroomId) => `messages/${classroomId}`,

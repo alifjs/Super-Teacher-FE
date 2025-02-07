@@ -7,7 +7,7 @@ export const projectApi = createApi({
   baseQuery,
   tagTypes: ["Classrooms", "UnenrolledStudents",
     "EnrolledStudents", "Materials","Exams","Assignments","Messages",
-    "Classroom"],
+    "Classroom","Notifications"],
   endpoints: () => ({}),
 });
 
