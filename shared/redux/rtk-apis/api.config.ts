@@ -6,7 +6,8 @@ export const projectApi = createApi({
   reducerPath: "projectApi",
   baseQuery,
   tagTypes: ["Classrooms", "UnenrolledStudents",
-    "EnrolledStudents", "Materials","Exams","Assignments"],
+    "EnrolledStudents", "Materials","Exams","Assignments","Messages",
+    "Classroom"],
   endpoints: () => ({}),
 });
 

@@ -1,8 +1,10 @@
 export type TClassroom = {
+    id: string;
     title: string;
     subject: string;
     classTime: Date;
     days: Array<string>;
+    meetLink: string;
 };
 
 export type TUser = {

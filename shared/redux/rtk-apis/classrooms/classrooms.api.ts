@@ -18,6 +18,11 @@ const classroomsApi = projectApi.injectEndpoints({
       providesTags: ["Classrooms"],
       transformResponse: (response: TApiResponse<TClassroom[]>) => response.data,
     }),
+    getClassroom: builder.query({
+      query: (id) => `classrooms/${id}`,
+      transformResponse: (response: TApiResponse<TClassroom>) => response.data,
+      providesTags: ["Classroom"],
+    }),
     getClassroomTeacher: builder.query({
       query: (id) => `classrooms/${id}/teacher`,
       transformResponse: (response: TApiResponse<TClassroomTeacher>) => response.data,
@@ -48,10 +53,19 @@ const classroomsApi = projectApi.injectEndpoints({
       }),
       invalidatesTags: ['UnenrolledStudents', 'EnrolledStudents']
     }),
+    updateMeetLink: builder.mutation({
+      query: ({ id, meetLink }) => ({
+        url: `classrooms/${id}/meet-link`,
+        method: "PATCH",
+        body: { meetLink },
+      }),
+      invalidatesTags: ["Classroom"],
+      transformResponse: (response: TApiResponse<TClassroom>) => response.data,
+    }),
   }),
   overrideExisting: false,
 });
 
 export const { useCreateClassroomMutation, useGetClassroomsQuery, useAddStudentsMutation,
    useGetUnenrolledStudentsQuery, useGetEnrolledStudentsQuery, useGetClassroomTeacherQuery 
-  ,useRemoveStudentMutation} = classroomsApi;
+  ,useRemoveStudentMutation, useGetClassroomQuery, useUpdateMeetLinkMutation} = classroomsApi;
