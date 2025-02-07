@@ -2,6 +2,7 @@ import { PropsWithChildren } from "react";
 
 import { NextPage } from "next";
 import { AppProps } from "next/app";
+import { EMedium, EDegree } from "./enums";
 
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends Array<infer U>
@@ -47,3 +48,15 @@ export type TCustomAppProps<P = unknown> = AppProps & {
   Component: NextApplicationPage;
   pageProps: P;
 };
+export interface TStudent {
+  id: number;
+  address: string;
+  phoneNumber: string;
+  educationLevel: EEducationLevel;
+  medium: EMedium | null;
+  grade: string | null;
+  degree: EDegree | null;
+  degreeName: string | null;
+  semesterYear: string | null;
+  user: Rel<User>;
+}
