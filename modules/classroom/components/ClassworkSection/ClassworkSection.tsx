@@ -10,18 +10,63 @@ import ExamCard from "../ExamCard/ExamCard";
 import AddAssignmentDialog from "../AddAssignmentDialog/AddAssignmentDialog";
 import { useGetAllAssignmentsQuery } from "@/shared/redux/rtk-apis/assignments/assignments.api";
 import AssignmentCard from "../AssignmentCard/AssignmentCard";
+import { useSelector } from "react-redux";
+import { TRootState } from "@/shared/redux/store";
+import { TMaterial } from "@/shared/redux/rtk-apis/materials/materials.types";
+import { TAssignment } from "@/shared/redux/rtk-apis/assignments/assignments.types";
+import { TExam } from "@/shared/redux/rtk-apis/exams/exams.types";
 
 const ClassworkSection= ({classroomId}:{classroomId:string})=> {
+  const user = useSelector((state: TRootState) => state.authenticatedUser);
   const [expanded, setExpanded] = useState(false);
   const [isMaterialDialogOpen, setIsMaterialDialogOpen] = useState(false)
   const [isExamDialogOpen, setIsExamDialogOpen] = useState(false)
   const [isAssignmentDialogOpen, setIsAssignmentDialogOpen] = useState(false)
+  const [selectedMaterial, setSelectedMaterial] = useState<TMaterial | null>(null);
+  const [selectedAssignment, setSelectedAssignment] = useState<TAssignment | null>(null);
+  const [selectedExam, setSelectedExam] = useState<TExam | null>(null);
+
+
 
   const {data: materials }= useGetAllMaterialsQuery(classroomId)
   const {data: exams }= useGetAllExamsQuery(classroomId)
   const {data: assignments }= useGetAllAssignmentsQuery(classroomId)
+
+  const handleMaterialEdit = async (material: TMaterial) => {
+    await setSelectedMaterial(material);
+    setIsMaterialDialogOpen(true);
+  };
+
+  const handleMaterialDialogClose = () => {
+    setIsMaterialDialogOpen(false);
+    setSelectedMaterial(null);
+  };
+  
+  const handleAssignmentEdit = async (assignment: TAssignment) => {
+    await setSelectedAssignment(assignment);
+    setIsAssignmentDialogOpen(true);
+  };
+  
+  const handleAssignmentDialogClose = () => {
+    setIsAssignmentDialogOpen(false);
+    setSelectedAssignment(null);
+  };
+
+  const handleExamEdit = async (exam: TExam) => {
+    await setSelectedExam(exam);
+    setIsExamDialogOpen(true);
+  };
+  
+  const handleExamDialogClose = () => {
+    setIsExamDialogOpen(false);
+    setSelectedExam(null);
+  };
+  
+  
+
   return (
     <>
+    {user.role=='teacher'?(
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 p-4 pl-0 rounded-lg w-[250px] ">
       {expanded ? (
         <>
@@ -50,7 +95,7 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
           Create
         </Button>
       )}
-    </div>
+    </div>):null}
           <div className="w-full">
         <Accordion type="single" collapsible>
           <AccordionItem title="Upcoming Exams" value="upcoming-exams">
@@ -63,7 +108,7 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
             <AccordionContent>
             {
               exams?.map((exam)=>
-                <ExamCard exam={exam} />
+                <ExamCard exam={exam} onEdit={handleExamEdit}/>
               )
             }
             </AccordionContent>
@@ -80,7 +125,7 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
             <AccordionContent>
             {
               materials?.map((material)=>
-                <MaterialCard material={material} />
+                <MaterialCard material={material} onEdit={handleMaterialEdit}/>
               )
             }
             </AccordionContent>
@@ -92,16 +137,16 @@ const ClassworkSection= ({classroomId}:{classroomId:string})=> {
             <AccordionContent>
             {
               assignments?.map((assignment)=>
-                <AssignmentCard assignment={assignment} />
+                <AssignmentCard assignment={assignment} onEdit={handleAssignmentEdit}/>
               )
             }
             </AccordionContent>
         </AccordionItem>
         </Accordion>
       </div>
-     <AddMaterialDialog isDialogOpen={isMaterialDialogOpen} onClose={() => setIsMaterialDialogOpen(false)} classroomId={classroomId} />
-     <AddExamDialog isDialogOpen={isExamDialogOpen} onClose={() => setIsExamDialogOpen(false)} classroomId={classroomId} />
-     <AddAssignmentDialog isDialogOpen={isAssignmentDialogOpen} onClose={() => setIsAssignmentDialogOpen(false)} classroomId={classroomId} />
+     <AddMaterialDialog isDialogOpen={isMaterialDialogOpen} onClose={handleMaterialDialogClose} classroomId={classroomId} editData={selectedMaterial}/>
+     <AddExamDialog isDialogOpen={isExamDialogOpen} onClose={() => setIsExamDialogOpen(false)} classroomId={classroomId} editData={selectedExam}/>
+     <AddAssignmentDialog isDialogOpen={isAssignmentDialogOpen} onClose={() => setIsAssignmentDialogOpen(false)} classroomId={classroomId} editData={selectedAssignment}/>
 
     </>
   );

@@ -20,12 +20,22 @@ import { useDropzone } from "react-dropzone";
 import { useCallback } from "react";
 import useSubmitAddExamForm from '../../hooks/useSubmitAddExamForm';
 import { SIX_HOURS_IN_MS } from './AddExamDialog.constants';
+import { TExam } from '@/shared/redux/rtk-apis/exams/exams.types';
+import { formatForDateTimeLocal } from '../AddAssignmentDialog/AddAssignmentForm.utils';
+import useSubmitEditExamForm from '../../hooks/useSubmitEditExamForm';
 
 
-const AddExamForm = ({ onClose, classroomId }: { onClose: () => void; classroomId : string }) => {
+const AddExamForm = ({ onClose, classroomId, editData }: { onClose: () => void; classroomId : string; editData?: TExam | null; }) => {
     const form = useForm<TAddExamForm>({
       resolver: zodResolver(addExamFormSchema),
       mode: "onChange",
+      defaultValues: {
+        title: editData?.title || '',
+        instruction: editData?.instruction || '',
+        scheduleDate: editData?.scheduleDate 
+        ? formatForDateTimeLocal(editData.scheduleDate)
+        : ''
+      }
     });
 
     const {formState: { errors }, handleSubmit  } = form
@@ -36,13 +46,17 @@ const AddExamForm = ({ onClose, classroomId }: { onClose: () => void; classroomI
     };
 
     const { submitAddExamForm} = useSubmitAddExamForm()
+    const { submitEditExamForm } = useSubmitEditExamForm()
 
-    const handleFormSubmit =async (data: TAddExamForm) => { 
-      const success = await submitAddExamForm(data, classroomId);
+    const handleFormSubmit = async (data: TAddExamForm) => {
+      const success = editData
+        ? await submitEditExamForm(data, editData.id)
+        : await submitAddExamForm(data, classroomId);
       if (success) {
         onClose();
       }
     };
+    
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles[0]) {
           form.setValue("file", acceptedFiles[0]);

@@ -12,6 +12,21 @@ const materialsApi = projectApi.injectEndpoints({
       }),
       invalidatesTags:["Materials"]
     }),
+    editMaterial: builder.mutation({
+      query: ({ classroomId, materialId, formData }) => ({
+        url: `classrooms/${classroomId}/materials/${materialId}`,
+        method: "PATCH",
+        body: formData,
+      }),
+      invalidatesTags: ["Materials"]
+    }),
+    deleteMaterial: builder.mutation({
+      query: ({materialId }) => ({
+        url: `classrooms/materials/${materialId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Materials"]
+    }),
     getAllMaterials: builder.query({
       query: (id) => `classrooms/${id}/materials`,
       providesTags: ["Materials"],
@@ -20,4 +35,4 @@ const materialsApi = projectApi.injectEndpoints({
   })
 });
 
-export const {useAddMaterialMutation, useGetAllMaterialsQuery } = materialsApi;
+export const {useAddMaterialMutation, useGetAllMaterialsQuery, useEditMaterialMutation, useDeleteMaterialMutation  } = materialsApi;

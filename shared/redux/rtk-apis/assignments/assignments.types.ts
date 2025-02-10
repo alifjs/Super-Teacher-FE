@@ -14,4 +14,6 @@ export type TAssignmentSubmission={
     lastName: string; 
     email: string
     downloadUrl: string;
+    createdAt: Date;
+    deadline: Date
 }

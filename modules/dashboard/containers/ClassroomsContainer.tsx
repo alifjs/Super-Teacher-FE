@@ -14,7 +14,7 @@ const ClassroomsContainer = () => {
     }, [data])
 
     return (
-        <div className="flex flex-wrap justify-center md:justify-start gap-8 p-5">
+        <div className="flex flex-wrap justify-center md:justify-space-around gap-8 sm:gap-14 p-5 sm:p-10">
             {classrooms?.map((classroom) => (
                 <ClassroomCard key={classroom.title} classroom={classroom} />
             ))}

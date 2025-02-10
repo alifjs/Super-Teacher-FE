@@ -3,11 +3,14 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/shared/c
 import { TClassroom } from '@/shared/redux/rtk-apis/classrooms/classroom.types'
 import { FaCalendarAlt, FaClock, FaUsers, FaEllipsisV } from 'react-icons/fa'
 import { v4 as uuidv4 } from 'uuid';
-import { getRandomColor } from './ClassroomCard.helpers';
+import { getClassroomColor } from './ClassroomCard.helpers';
 import { useRouter } from 'next/router';
+import { ESubjects } from '@/shared/typedefs';
+import { useGetStudentCountQuery } from '@/shared/redux/rtk-apis/classrooms/classrooms.api';
 
 const ClassroomCard = ({ classroom }: { classroom: TClassroom }) => {
   const router = useRouter();
+  const { data: studentCount = 0 } = useGetStudentCountQuery(classroom.id);
 
   const handleClassroomClick = (id: number) => {
     router.push(`/classroom/${id}`);
@@ -19,7 +22,7 @@ const ClassroomCard = ({ classroom }: { classroom: TClassroom }) => {
       onClick={() => handleClassroomClick(classroom.id)}
     >
       <Card className="bg-white rounded-lg mt-2 shadow-md transition-transform transform hover:scale-[102%]">
-        <CardHeader className={`${getRandomColor()} rounded-t-lg p-4`}>
+        <CardHeader className={`${getClassroomColor(classroom.subject as ESubjects)} rounded-t-lg p-4`}>
           <div className="flex justify-between w-full">
             <div>
               <CardTitle className="text-xl md:text-2xl font-semibold">{classroom.title}</CardTitle>
@@ -39,7 +42,7 @@ const ClassroomCard = ({ classroom }: { classroom: TClassroom }) => {
           </div>
           <div className="flex items-center text-gray-400">
             <FaUsers className="mr-2" />
-            <p>0</p>
+            <p>{studentCount}</p>
           </div>
         </CardContent>
         <CardFooter className="bg-gray-700 rounded-b-lg flex items-center p-3">
