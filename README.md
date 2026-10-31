@@ -1,3 +1,35 @@
+# Super Teacher: Front End
+
+The web client for **Super Teacher**, an online classroom platform in the spirit of Google Classroom.
+
+Back end: [Super-Teacher-BE](https://github.com/alifjs/Super-Teacher-BE)
+
+## Features
+
+- Landing page, registration, login, forgot / change password
+- Teacher and student dashboards
+- Classroom pages with stream, classwork and people: add materials, assignments, exams, meet links and students
+- Real-time classroom chat (Socket.IO)
+- File uploads with drag-and-drop, date pickers, toasts, dark mode
+
+## Tech & engineering
+
+| | |
+|---|---|
+| Framework | Next.js + React, TypeScript |
+| State & data | Redux Toolkit + RTK Query with shared API types |
+| UI | Tailwind CSS, shadcn/ui (Radix primitives), lucide icons |
+| Forms | React Hook Form + Zod schemas |
+| Real time | socket.io-client |
+| Quality | Jest unit tests, ESLint, Prettier, Husky + commitlint, GitHub Actions (build, lint, test) |
+| Infra | Dockerfile for deployment |
+
+Code is organised by feature (`modules/classroom`, `modules/dashboard`, `modules/login`, ...). Each module keeps its components, form schemas, types and hooks together.
+
+---
+
+## Development setup
+
 # Installation
 Make sure you have `nvm` installed. Then, run the following commands:
 
